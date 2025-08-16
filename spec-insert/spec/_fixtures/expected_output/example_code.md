@@ -35,9 +35,30 @@ response = client.cat.health(
 
 {% endcapture %}
 
+{% capture step1_javascript %}
+
+import { Client } from '@opensearch-project/opensearch';
+
+const client = new Client({
+  node: 'https://localhost:9200',
+  auth: { username: 'admin', password: 'admin' }, // For testing only. Don't store credentials in code.
+  ssl: { rejectUnauthorized: false }
+});
+
+async function run() {
+  const response = await client.cat.health({
+  pretty: 'true',
+  human: 'false'
+});
+}
+
+
+{% endcapture %}
+
 {% include code-block.html
     rest=step1_rest
-    python=step1_python %}
+    python=step1_python
+    javascript=step1_javascript %}
 <!-- spec_insert_end -->
 
 <!-- spec_insert_start
@@ -58,9 +79,23 @@ response = client.search(
 
 {% endcapture %}
 
+{% capture step1_javascript %}
+
+async function run() {
+  const response = await client.search({
+  index: '{index}',
+  analyzer: 'standard',
+  expand_wildcards: 'all'
+});
+}
+
+
+{% endcapture %}
+
 {% include code-block.html
     rest=step1_rest
-    python=step1_python %}
+    python=step1_python
+    javascript=step1_javascript %}
 <!-- spec_insert_end -->
 
 <!-- spec_insert_start
@@ -103,9 +138,27 @@ response = client.indices.put_settings(
 
 {% endcapture %}
 
+{% capture step1_javascript %}
+
+async function run() {
+  const response = await client.indices.put_settings({
+  expand_wildcards: 'all',
+  analyze_wildcard: 'true',
+  body: {
+  "index": {
+    "number_of_replicas": 2
+  }
+}
+});
+}
+
+
+{% endcapture %}
+
 {% include code-block.html
     rest=step1_rest
-    python=step1_python %}
+    python=step1_python
+    javascript=step1_javascript %}
 <!-- spec_insert_end -->
 
 <!-- spec_insert_start
@@ -157,9 +210,35 @@ response = client.bulk(
 
 {% endcapture %}
 
+{% capture step1_javascript %}
+
+import { Client } from '@opensearch-project/opensearch';
+
+const client = new Client({
+  node: 'https://localhost:9200',
+  auth: { username: 'admin', password: 'admin' }, // For testing only. Don't store credentials in code.
+  ssl: { rejectUnauthorized: false }
+});
+
+const ndjson = String.raw`
+{"index":{"_index":"test","_id":"1"}}
+{"field1":"value1"}
+{"delete":{"_index":"test","_id":"2"}}
+`;
+async function run() {
+  const response = await client.bulk({
+  expand_wildcards: 'all',
+  body: ndjson
+});
+}
+
+
+{% endcapture %}
+
 {% include code-block.html
     rest=step1_rest
-    python=step1_python %}
+    python=step1_python
+    javascript=step1_javascript %}
 <!-- spec_insert_end -->
 
 <!-- spec_insert_start
@@ -223,7 +302,37 @@ response = client.bulk(
 
 {% endcapture %}
 
+{% capture step1_javascript %}
+
+import { Client } from '@opensearch-project/opensearch';
+
+const client = new Client({
+  node: 'https://localhost:9200',
+  auth: { username: 'admin', password: 'admin' }, // For testing only. Don't store credentials in code.
+  ssl: { rejectUnauthorized: false }
+});
+
+const ndjson = String.raw`
+{ "delete": { "_index": "movies", "_id": "tt2229499" } }
+{ "index": { "_index": "movies", "_id": "tt1979320" } }
+{ "title": "Rush", "year": 2013 }
+{ "create": { "_index": "movies", "_id": "tt1392214" } }
+{ "title": "Prisoners", "year": 2013 }
+{ "update": { "_index": "movies", "_id": "tt0816711" } }
+{ "doc" : { "title": "World War Z" } }
+`;
+async function run() {
+  const response = await client.bulk({
+  expand_wildcards: 'all',
+  body: ndjson
+});
+}
+
+
+{% endcapture %}
+
 {% include code-block.html
     rest=step1_rest
-    python=step1_python %}
+    python=step1_python
+    javascript=step1_javascript %}
 <!-- spec_insert_end -->

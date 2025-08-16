@@ -2,6 +2,7 @@
 
 require 'json'
 require_relative 'example_code_python'
+require_relative 'example_code_javascript'
 
 class ExampleCode < BaseMustacheRenderer
   self.template_file = "#{__dir__}/templates/example_code.mustache"
@@ -26,5 +27,9 @@ class ExampleCode < BaseMustacheRenderer
 
   def python_code
     ExampleCodePython.new(@action, @args).render
+  end
+
+  def javascript_code
+    ExampleCodeJavaScript.new(@action, @args).render
   end
 end
